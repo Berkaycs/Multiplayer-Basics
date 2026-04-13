@@ -8,8 +8,18 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private InteractionDetector _interactionDetector;
     [SerializeField] private Animator _animator;
     [SerializeField] private AnimationEvents _animationEvents;
-    
+
+    [Header("Held Tool")]
+    [SerializeField] private GameObject _axeModel;
+    [SerializeField] private GameObject _pickAxeModel;
+    [SerializeField] private GameObject _woodModel;
+    [SerializeField] private GameObject _stoneModel;
+
     private bool _isInteracting = false;
+    private bool _isChopping = false;
+
+    private NetworkVariable<ulong> _heldToolNetworkObjectId = new NetworkVariable<ulong>(ulong.MaxValue);
+    private NetworkVariable<ObjectType> _heldToolObjectType = new NetworkVariable<ObjectType>(ObjectType.None);
 
     private void OnEnable()
     {
@@ -27,10 +37,15 @@ public class PlayerController : NetworkBehaviour
     {
         _interactionDetector.Initialize(IsOwner);
 
+        _heldToolObjectType.OnValueChanged += OnHeldToolObjectTypeChanged;
+
+        HandleItemOnJoin();
+
         if (IsOwner)
         {
             _animationEvents.OnInteract += OnInteract;
             _animationEvents.OnAnimationDone += OnAnimationDone;
+            _animationEvents.OnChop += OnChop;
         }
     }
 
@@ -38,8 +53,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner)
         {
+            RequestDropCurrentItemServerRpc();
             _animationEvents.OnInteract -= OnInteract;
             _animationEvents.OnAnimationDone -= OnAnimationDone;
+            _animationEvents.OnChop -= OnChop;
         }
     }
 
@@ -48,12 +65,18 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) return;
 
         Vector2 movementInput = _playerInput.MovementInput;
+
+        if (_isChopping || _isInteracting)
+        {
+            movementInput = Vector2.zero;
+        }
+
         _agentMover.Move(movementInput);
     }
 
     private void OnPickUpPressed()
     {
-        if (_isInteracting) return;
+        if (_isInteracting || _isChopping) return;
 
         if (_interactionDetector.ClosestInteractable == null) return;
 
@@ -63,7 +86,15 @@ public class PlayerController : NetworkBehaviour
 
     private void OnInteractPressed()
     {
-        Debug.Log("Interact Pressed");
+        if (!IsOwner) return;
+
+        if (_isChopping || _isInteracting) return;
+
+        if (_heldToolObjectType.Value is ObjectType.Axe or ObjectType.PickAxe)
+        {
+            _isChopping = true;
+            _animator.SetTrigger("Chop");
+        }
     }
 
     private void OnInteract()
@@ -77,15 +108,94 @@ public class PlayerController : NetworkBehaviour
     private void OnAnimationDone()
     {
         _isInteracting = false;
+        _isChopping = false;
+    }
+
+    private void OnChop()
+    {
+        if (_heldToolObjectType.Value is ObjectType.Axe or ObjectType.PickAxe)
+        {
+            if (_interactionDetector.ClosestInteractable is ResourceNode)
+            {
+                RequestResourceNodeInteractionServerRpc(_interactionDetector.ClosestInteractable.NetworkObject.NetworkObjectId);
+            }
+        }
+    }
+
+    private void OnHeldToolObjectTypeChanged(ObjectType previousValue, ObjectType newValue)
+    {
+        _axeModel.SetActive(newValue == ObjectType.Axe);
+        _pickAxeModel.SetActive(newValue == ObjectType.PickAxe);
+        _woodModel.SetActive(newValue == ObjectType.Wood);
+        _stoneModel.SetActive(newValue == ObjectType.Stone);
+    }
+
+    private void HandleItemOnJoin()
+    {
+        if (_heldToolObjectType.Value != ObjectType.None)
+        {
+            OnHeldToolObjectTypeChanged(ObjectType.None, _heldToolObjectType.Value);
+        }
     }
 
     [Rpc(SendTo.Server)]
-    private void RequestPickUpServerRpc(ulong pickableId)
+    private void RequestPickUpServerRpc(ulong networkObjectId)
     {
-        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(pickableId, out NetworkObject pickable)) return;
+        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject pickable)) return;
         if (!pickable.TryGetComponent(out PickableBase pickableItem)) return;
         if (!pickableItem.CanBePickedUp) return;
 
+        if (_heldToolObjectType.Value != ObjectType.None)
+        {
+            DropCurrentItem();
+        }
+
+        if (pickableItem is PickableTool)
+        {
+            _heldToolNetworkObjectId.Value = networkObjectId;
+        }
+
+        _heldToolObjectType.Value = pickableItem.ObjectType;
         pickableItem.PickUp();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestResourceNodeInteractionServerRpc(ulong networkObjectId)
+    {
+        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject target)) return;
+        if (!target.TryGetComponent(out ResourceNode resourceNode)) return;
+
+        resourceNode.Harvest(_heldToolObjectType.Value);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestDropCurrentItemServerRpc()
+    {
+        DropCurrentItem();
+    }
+
+    private void DropCurrentItem()
+    {
+        if (!IsServer) return;
+
+        if (_heldToolObjectType.Value == ObjectType.None)
+        {
+            _heldToolNetworkObjectId.Value = ulong.MaxValue;
+            return;
+        }
+
+        if (_heldToolObjectType.Value is ObjectType.Axe or ObjectType.PickAxe)
+        {
+            if (NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(_heldToolNetworkObjectId.Value, out NetworkObject target))
+            {
+                if (target.TryGetComponent(out PickableTool pickableItem))
+                {
+                    pickableItem.Drop(transform.position);
+                }
+            }
+        }
+
+        _heldToolObjectType.Value = ObjectType.None;
+        _heldToolNetworkObjectId.Value = ulong.MaxValue;
     }
 }
