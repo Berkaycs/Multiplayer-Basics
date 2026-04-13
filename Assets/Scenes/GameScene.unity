@@ -606,6 +606,14 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 595578218
       objectReference: {fileID: 0}
+    - target: {fileID: 4991784893829565111, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
+      propertyPath: Components.Array.data[0].name
+      value: Tree (2) (Capsule Collider)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4991784893829565111, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
+      propertyPath: Components.Array.data[1].name
+      value: Tree (2) (Mesh Renderer)
+      objectReference: {fileID: 0}
     - target: {fileID: 8797905904205309833, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 863290568
@@ -1407,6 +1415,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06db3c10e220542b99c4cfdc494bee32, type: 3}
+--- !u!114 &636919770 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -6160523276960631883, guid: 06db3c10e220542b99c4cfdc494bee32, type: 3}
+  m_PrefabInstance: {fileID: 636919769}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9298ec2c970727468b59c0353aaf156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourcePallet
 --- !u!1 &720351025
 GameObject:
   m_ObjectHideFlags: 0
@@ -1756,6 +1775,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7597274740775488156, guid: 28ea3d07c5fa049479b7b6f4f3acc6c8, type: 3}
+      propertyPath: Components.Array.data[0].name
+      value: Rock (1) (Mesh Renderer)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597274740775488156, guid: 28ea3d07c5fa049479b7b6f4f3acc6c8, type: 3}
+      propertyPath: Components.Array.data[1].name
+      value: Rock (1) (Capsule Collider)
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1841,6 +1868,14 @@ PrefabInstance:
     - target: {fileID: 2464339514135272495, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 595578218
+      objectReference: {fileID: 0}
+    - target: {fileID: 4991784893829565111, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
+      propertyPath: Components.Array.data[0].name
+      value: Tree (1) (Capsule Collider)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4991784893829565111, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
+      propertyPath: Components.Array.data[1].name
+      value: Tree (1) (Mesh Renderer)
       objectReference: {fileID: 0}
     - target: {fileID: 8797905904205309833, guid: e4d3a6a6b3552c346994ddb69543052c, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -1944,6 +1979,7 @@ GameObject:
   - component: {fileID: 1491149216}
   - component: {fileID: 1491149214}
   - component: {fileID: 1491149215}
+  - component: {fileID: 1491149217}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1990,6 +2026,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   ShowTopMostFoldoutHeaderGroup: 1
   _multiplayerUI: {fileID: 306963177}
+  _playerPrefab: {fileID: 1855797244298458106, guid: 24e075b32f01fa74eae0fe6c15ccb589, type: 3}
+  _resourcePallets:
+  - {fileID: 2488478570262511239}
+  - {fileID: 636919770}
 --- !u!4 &1491149216
 Transform:
   m_ObjectHideFlags: 0
@@ -2005,6 +2045,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1491149217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491149213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b28f1a14e6c444da1000d347361d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceSpawner
+  ShowTopMostFoldoutHeaderGroup: 1
+  _woodResourcePrefab: {fileID: 1550290328845273414, guid: e936df660d5d23043941bdbc706607c9, type: 3}
+  _stoneResourcePrefab: {fileID: 7592819132619310427, guid: 52b870ca5e67142869af9c1f57882bfd, type: 3}
 --- !u!1001 &1494542163
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2661,7 +2716,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2058782276}
-    PlayerPrefab: {fileID: 1855797244298458106, guid: 24e075b32f01fa74eae0fe6c15ccb589, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 4cedba757d310fc4d94c6086c83aac24, type: 2}
@@ -2787,6 +2842,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock
       objectReference: {fileID: 0}
+    - target: {fileID: 7597274740775488156, guid: 28ea3d07c5fa049479b7b6f4f3acc6c8, type: 3}
+      propertyPath: Components.Array.data[0].name
+      value: Rock (Mesh Renderer)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597274740775488156, guid: 28ea3d07c5fa049479b7b6f4f3acc6c8, type: 3}
+      propertyPath: Components.Array.data[1].name
+      value: Rock (Capsule Collider)
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2870,6 +2933,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73dbe4cc9c782f74db20a3ec1e60a2f5, type: 3}
+--- !u!114 &2488478570262511239 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 447973400221536328, guid: 73dbe4cc9c782f74db20a3ec1e60a2f5, type: 3}
+  m_PrefabInstance: {fileID: 2488478570262511238}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9298ec2c970727468b59c0353aaf156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourcePallet
 --- !u!1001 &5358238932391429143
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private InteractionDetector _interactionDetector;
     [SerializeField] private Animator _animator;
     [SerializeField] private AnimationEvents _animationEvents;
+    private ResourceSpawner _resourceSpawner;
 
     [Header("Held Tool")]
     [SerializeField] private GameObject _axeModel;
@@ -31,6 +32,11 @@ public class PlayerController : NetworkBehaviour
     {
         _playerInput.OnPickUpPressed -= OnPickUpPressed;
         _playerInput.OnInteractPressed -= OnInteractPressed;
+    }
+
+    private void Awake()
+    {
+        _resourceSpawner = FindFirstObjectByType<ResourceSpawner>();
     }
 
     public override void OnNetworkSpawn()
@@ -103,6 +109,11 @@ public class PlayerController : NetworkBehaviour
         {
             RequestPickUpServerRpc(_interactionDetector.ClosestInteractable.NetworkObject.NetworkObjectId);
         }
+
+        if (_interactionDetector.ClosestInteractable is ResourcePallet)
+        {
+            RequestGiveItemToPalletServerRpc(_interactionDetector.ClosestInteractable.NetworkObject.NetworkObjectId);
+        }
     }
 
     private void OnAnimationDone()
@@ -160,6 +171,19 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
+    private void RequestGiveItemToPalletServerRpc(ulong networkObjectId)
+    {
+        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject pallet)) return;
+        if (!pallet.TryGetComponent(out ResourcePallet resourcePallet)) return;
+
+        if (resourcePallet.Interact(_heldToolObjectType.Value))
+        {
+            _heldToolObjectType.Value = ObjectType.None;
+            _heldToolNetworkObjectId.Value = ulong.MaxValue;
+        }
+    }
+
+    [Rpc(SendTo.Server)]
     private void RequestResourceNodeInteractionServerRpc(ulong networkObjectId)
     {
         if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject target)) return;
@@ -193,6 +217,10 @@ public class PlayerController : NetworkBehaviour
                     pickableItem.Drop(transform.position);
                 }
             }
+        }
+        else
+        {
+            _resourceSpawner.SpawnResource(_heldToolObjectType.Value, transform.position);
         }
 
         _heldToolObjectType.Value = ObjectType.None;

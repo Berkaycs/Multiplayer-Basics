@@ -12,8 +12,14 @@ public class ResourceNode : NetworkBehaviour, IInteractable
     [SerializeField] private int _amountToSpawn = 3;
     [SerializeField] private InteractAnimation _interactAnimation;
     [SerializeField] private ItemsAudio _itemsAudio;
+    private ResourceSpawner _resourceSpawner;
 
     private NetworkVariable<int> _health = new NetworkVariable<int>(3);
+
+    private void Awake()
+    {
+        _resourceSpawner = FindFirstObjectByType<ResourceSpawner>();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -47,7 +53,7 @@ public class ResourceNode : NetworkBehaviour, IInteractable
                     Vector2 offset = UnityEngine.Random.insideUnitCircle;
                     position.x += offset.x;
                     position.z += offset.y;
-                    Debug.Log($"Spawning item at {position}");
+                    _resourceSpawner.SpawnResource(_producedObjectType, position);
                 }
             }
         }
