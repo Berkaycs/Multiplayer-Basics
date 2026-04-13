@@ -68,13 +68,8 @@ PrefabInstance:
       addedObject: {fileID: 2526142508673975234}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8d37061370f27ee48a35ba31ebb51c09, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8662423898973171276}
+      addedObject: {fileID: 3518699258056852517}
   m_SourcePrefab: {fileID: 100100000, guid: 8d37061370f27ee48a35ba31ebb51c09, type: 3}
---- !u!4 &6211565343829425787 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8d37061370f27ee48a35ba31ebb51c09, type: 3}
-  m_PrefabInstance: {fileID: 5888826740656642448}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6735196368025167041 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8d37061370f27ee48a35ba31ebb51c09, type: 3}
@@ -115,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c28fb3983763afa4795de0320077432e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectionOutline
---- !u!114 &8662423898973171276
+--- !u!114 &3518699258056852517
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,10 +119,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 6735196368025167041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99640b888cf4c8549ab842719e3526f3, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InteractAnimation
-  m_resourceVisual: {fileID: 6211565343829425787}
-  m_shakeScale: 1.2
-  m_shakeDuration: 0.15
-  m_returnDuration: 0.3
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0

@@ -13,7 +13,7 @@ public class MultiplayerUI : MonoBehaviour
     [SerializeField]
     private Button m_hostButton, m_clientButton, m_clientDisconnect;
 
-    public event Action OnStartHost, OnStartClient, OnDiconnectClient;
+    public event Action OnStartHost, OnStartClient, OnDisconnectClient;
     private void Awake()
     {
         m_hostButton = m_uiDocument.rootVisualElement.Q<Button>("ButtonHost");
@@ -24,7 +24,7 @@ public class MultiplayerUI : MonoBehaviour
     {
         m_hostButton.clicked += () => OnStartHost?.Invoke();
         m_clientButton.clicked += () => OnStartClient?.Invoke();
-        m_clientDisconnect.clicked += () => OnDiconnectClient?.Invoke();
+        m_clientDisconnect.clicked += () => OnDisconnectClient?.Invoke();
         EnableButtons();
     }
 
